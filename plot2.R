@@ -1,0 +1,10 @@
+library(sqldf)
+desiredData <- read.csv.sql(file = "household_power_consumption.txt", header = T,sep = ";",sql = "select * from file where Date = '1/2/2007' or date = '2/2/2007'")
+dataTimestamp <- paste(desiredData$Date,desiredData$Time)
+drops <- c("Date","Time")
+newData <- desiredData[,!(names(desiredData) %in% drops)]
+times <- strptime(x = dataTimestamp,format = "%d/%m/%Y %H:%M:%S")
+newData <- cbind(times,newData)
+png(filename = "plot2.png", bg = "transparent")
+with(newData, plot(Global_active_power ~ times, ylab = "Global Active Power (kilowatts)", xlab = NA, type='l'))
+dev.off()
